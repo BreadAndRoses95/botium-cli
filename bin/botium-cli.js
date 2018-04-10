@@ -16,6 +16,13 @@ const handleConfig = (argv, loadConfig) => {
     debug('Loading Botium configuration file ' + argv.config)
     try {
       argv.configJson = JSON.parse(fs.readFileSync(argv.config))
+      var capsToTest = Object.keys(argv.configJson.botium.Capabilities)
+      Object.keys(process.env).forEach(function(element,key,_array) {
+        if (capsToTest.includes(element)) {
+          argv.configJson.botium.Capabilities[element] = process.env[element]
+          debug('changed : ' + element + ' to : ' + process.env[element]);
+        }
+      })
     } catch (err) {
       console.log(`FAILED: configuration file ${argv.config} not readable`)
       return false
